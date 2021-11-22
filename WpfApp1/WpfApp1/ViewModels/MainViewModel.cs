@@ -24,11 +24,9 @@ namespace WpfApp1.ViewModels
             get { return this._inputString; }
             set
             {
-                if(this._inputString != value)
+                if(SetProperty(ref this._inputString,value))
                 {
-                    this._inputString = value;
                     this.UpperString = this._inputString.ToUpper();
-                    OnPropertyChanged();
                     System.Diagnostics.Debug.Write("UpperString=" + this.UpperString);
                 }
             }
@@ -37,15 +35,24 @@ namespace WpfApp1.ViewModels
         public string UpperString
         {
             get { return this._upperString; }
-            private set
-            {
-                if(this._upperString != value)
-                {
-                    this._upperString = value;
-                    OnPropertyChanged();
-                }
-                   
-            }
+            private set { SetProperty(ref this._upperString, value); }
+        }
+
+        /// <summary>
+        /// The function below works as setting Properties from UI
+        /// </summary>
+        /// <typeparam name="T">The type of Property</typeparam>
+        /// <param name="target">The target Property name</param>
+        /// <param name="value">The Setted Value for target Property</param>
+        /// <param name="PropertyName">The name of target Property</param>
+        /// <returns></returns>
+        private bool SetProperty<T>(ref T target, T value, [CallerMemberName] string PropertyName=null)
+        {
+            if(Equals(target, value))
+                return false;
+            target = value;
+            OnPropertyChanged(PropertyName);
+            return true;
         }
 
         /// <summary>
